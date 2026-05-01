@@ -15,22 +15,27 @@ const Admin = () => {
     setLoading(true);
     setError('');
 
+    // Local password check (since there is no backend server)
+    if (password !== 'AssamiSuckDick') {
+      setError('ACCESS DENIED. INVALID CREDENTIALS.');
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await fetch('http://localhost:5000/api/registrations', {
-        headers: {
-          'x-admin-password': password
-        }
-      });
+      const response = await fetch('https://sheetdb.io/api/v1/ayjxzpdl0dztr');
 
       if (response.ok) {
         const result = await response.json();
+        // SheetDB returns rows with an incrementing index if no ID column is found,
+        // but we'll use the data as is.
         setData(result);
         setIsAuthenticated(true);
       } else {
-        setError('ACCESS DENIED. INVALID CREDENTIALS.');
+        setError('DATABASE CONNECTION FAILED.');
       }
     } catch (err) {
-      setError('CONNECTION FAILED.');
+      setError('NETWORK ERROR. CHECK YOUR INTERNET.');
     } finally {
       setLoading(false);
     }

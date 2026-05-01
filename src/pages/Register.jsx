@@ -66,23 +66,43 @@ const Register = () => {
     setLoading(true);
     setStatus({ type: '', text: '' });
 
+    // Prepare data for SheetDB (convert arrays to comma-separated strings)
+    const payload = {
+      ...formData,
+      joinReason: formData.joinReason.join(', '),
+      domains: formData.domains.join(', '),
+      techStack: formData.techStack.join(', '),
+      tools: formData.tools.join(', '),
+      registrationDate: new Date().toLocaleString()
+    };
+
     try {
-      const response = await fetch('http://localhost:5000/api/register', {
+      const response = await fetch('https://sheetdb.io/api/v1/ayjxzpdl0dztr', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ data: [payload] }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
         setStatus({ type: 'success', text: 'REQUEST ACCEPTED. WELCOME TO THE NODE.' });
-        // Reset form or redirect
+        // Reset form
+        setFormData({
+          fullName: '', bennettEmail: '', whatsappNumber: '', college: '', course: '', yearOfStudy: '',
+          linkedinProfile: '', githubProfile: '', portfolio: '', joinReason: [], domains: [],
+          techStack: [], tools: [], hasProjects: '', projectLinks: '', workUpload: '',
+          bestProjectDesc: '', skills: '', currentlyLearning: '', personality: '',
+          talkHours: '', vibe: '', attendOffline: '', whyApprove: ''
+        });
       } else {
         setStatus({ type: 'error', text: data.error || 'REGISTRATION FAILED.' });
       }
     } catch (error) {
-      setStatus({ type: 'error', text: 'CONNECTION FAILED. TRY AGAIN.' });
+      setStatus({ type: 'error', text: 'CONNECTION FAILED. CHECK YOUR INTERNET.' });
     } finally {
       setLoading(false);
     }
