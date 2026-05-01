@@ -1,6 +1,9 @@
 import express from 'express';
 import cors from 'cors';
+import dotenv from 'dotenv';
 import db from './db.js';
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -62,7 +65,7 @@ app.post('/api/register', (req, res) => {
 
 app.get('/api/registrations', (req, res) => {
   const adminPassword = req.headers['x-admin-password'];
-  if (adminPassword !== '$hrishLovesDick') {
+  if (adminPassword !== process.env.ADMIN_PASSWORD) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
