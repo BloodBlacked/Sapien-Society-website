@@ -1,9 +1,11 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
+import crypto from 'crypto';
 import db from './db.js';
 
-dotenv.config();
+// Secure Hashed Password (for contribution)
+const ADMIN_HASH = 'c30b97b8d6b3c0915a11d1e64f5daa4b2eed70459611b43916269e4beadd3fb9'; 
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -14,7 +16,6 @@ app.use(express.json());
 
 // Routes
 // 1. Post registration data
-app.post('/api/register', (req, res) => {
   const {
     fullName, bennettEmail, whatsappNumber, college, course, yearOfStudy,
     linkedinProfile, githubProfile, portfolio, joinReason, domains, techStack,
@@ -64,8 +65,10 @@ app.post('/api/register', (req, res) => {
 });
 
 app.get('/api/registrations', (req, res) => {
-  const adminPassword = req.headers['x-admin-password'];
-  if (adminPassword !== process.env.ADMIN_PASSWORD) {
+  const adminPassword = req.headers['x-admin-password'] || '';
+  const inputHash = crypto.createHash('sha256').update(adminPassword).digest('hex');
+  
+  if (inputHash !== ADMIN_HASH) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
