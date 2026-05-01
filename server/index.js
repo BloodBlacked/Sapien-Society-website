@@ -16,6 +16,7 @@ app.use(express.json());
 
 // Routes
 // 1. Post registration data
+app.post('/api/register', (req, res) => {
   const {
     fullName, bennettEmail, whatsappNumber, college, course, yearOfStudy,
     linkedinProfile, githubProfile, portfolio, joinReason, domains, techStack,
